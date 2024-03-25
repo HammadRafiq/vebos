@@ -85,15 +85,16 @@ router.get('/', async (request, response) => {
     const indexFrom = handleIndexFrom(page, limit)
     const filter = {}
     try {
-        const campaigns = await Campaigns.find(filter)
-            .limit(limit ?? 10)
-            .skip(indexFrom)
-            .exec()
-        const total = await Campaigns.countDocuments(filter)
-        return response.status(200).json({
-            total,
-            items: campaigns,
-        });
+        // const campaigns = await Campaigns.find(filter)
+        //     .limit(limit ?? 10)
+        //     .skip(indexFrom)
+        //     .exec()
+        // const total = await Campaigns.countDocuments(filter)
+        // return response.status(200).json({
+        //     total,
+        //     items: campaigns,
+        // });
+        return response.status(200).json("brand campaigns api execute success")
     } catch (error) {
         console.log(error.message);
         response.status(500).send({ message: error.message });
