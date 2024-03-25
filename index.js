@@ -39,17 +39,24 @@ app.use('/brand/auth', authBrands)
 app.use('/brand/campaigns', campaigns)
 app.use('/brand', index) // Rest of the routes
 
+swaggerDocs(app, PORT)
+app.listen(PORT, () => {
+  console.log(`App is listening to port: ${PORT}`);
+});
+
 mongoose
   .connect(mongoDBURL, {
     dbName: "vebos"
   })
   .then(() => {
     console.log('App connected to database');
-    swaggerDocs(app, PORT)
-    app.listen(PORT, () => {
-      console.log(`App is listening to port: ${PORT}`);
-    });
+    // swaggerDocs(app, PORT)
+    // app.listen(PORT, () => {
+    //   console.log(`App is listening to port: ${PORT}`);
+    // });
   })
   .catch((error) => {
     console.log(error);
   });
+
+export default app
