@@ -38,6 +38,7 @@ app.use('/creator/clips', clips)
 app.use('/brand/auth', authBrands)
 app.use('/brand/campaigns', campaigns)
 app.use('/brand', index) // Rest of the routes
+swaggerDocs(app, PORT)
 
 mongoose
   .connect(mongoDBURL, {
@@ -45,7 +46,7 @@ mongoose
   })
   .then(() => {
     console.log('App connected to database');
-    swaggerDocs(app, PORT)
+    // swaggerDocs(app, PORT)
     app.listen(PORT, () => {
       console.log(`App is listening to port: ${PORT}`);
     });
