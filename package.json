@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "index.js",
+  "main": "index.cjs",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node index.cjs",
+    "dev": "nodemon index.cjs"
   },
   "keywords": [],
-  "author": "MamadTaheri68",
+  "author": "Hammad-Rafiq",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
