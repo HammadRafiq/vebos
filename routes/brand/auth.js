@@ -68,7 +68,8 @@ router.post('/signup', async (request, response) => {
   try {
     const brandExists = await Brands.findOne({ email: request.body.email })
     if (brandExists) {
-      return response.status(400).send("Brand with this email already exists");
+      response.status(400).send("Brand with this email already exists");
+      return
     }
     const securePassword = await bcrypt.hash(request.body.password, 10)
     const newBrand = new Brands({
@@ -76,7 +77,8 @@ router.post('/signup', async (request, response) => {
       password: securePassword
     })
     const brand = await newBrand.save()
-    return response.status(201).send(brand);
+    response.status(201).send(brand);
+    return
   } catch (error) {
     response.status(500).send({ message: error.message });
   }

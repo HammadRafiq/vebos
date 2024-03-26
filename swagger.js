@@ -1,5 +1,6 @@
 import swaggerJsdoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
+
 const options = {
     definition: {
         openapi: '3.0.0',
@@ -28,10 +29,14 @@ const options = {
     apis: ['./routes/*.js', './routes/brand/*.js', './routes/creator/*.js'],
 }
 
+const options1 = { customCssUrl: '/public/swagger-ui.css', customSiteTitle: "Swagger UI" };
+
+
 const swaggerSpec = swaggerJsdoc(options)
 function swaggerDocs(app, port) {
     // Swagger Page
-    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+    app.use('/docs', swaggerUi.serve)
+    app.get('/docs', swaggerUi.setup(swaggerSpec, options1))
     // Documentation in JSON format
     app.get('/docs.json', (req, res) => {
         res.setHeader('Content-Type', 'application/json')

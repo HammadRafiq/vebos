@@ -60,11 +60,11 @@ router.post('/submit', upload.single("video"), async (req, res) => {
 
 /**
  * @openapi
- * '/brand/campaigns':
+ * '/brand/clips':
  *  get:
  *     tags:
- *     - Brand Campaign
- *     summary: Get all campaigns
+ *     - Creator Clips
+ *     summary: Get all clips
  *     parameters:
  *      - name: page
  *        in: query
@@ -83,14 +83,14 @@ router.get('/', async (request, response) => {
     const indexFrom = handleIndexFrom(page, limit)
     const filter = {}
     try {
-        const campaigns = await Campaigns.find(filter)
+        const clips = await Clips.find(filter)
             .limit(limit ?? 10)
             .skip(indexFrom)
             .exec()
-        const total = await Campaigns.countDocuments(filter)
+        const total = await Clips.countDocuments(filter)
         return response.status(200).json({
             total,
-            items: campaigns,
+            items: clips,
         });
     } catch (error) {
         console.log(error.message);
