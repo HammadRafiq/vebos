@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const clipSchema = new mongoose.Schema({
+    creatorId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Creators"
+    },
     title: {
         type: String,
         required: [true]
@@ -15,6 +19,9 @@ const clipSchema = new mongoose.Schema({
     },
     estRevenue: {
         type: Number,
+    },
+    date: {
+        type: Date,
     },
 })
 

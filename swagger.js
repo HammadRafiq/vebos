@@ -14,14 +14,26 @@ const options = {
             // },
             version: '1.0.0',
         },
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                }
+            }
+        },
+        security: [{
+            bearerAuth: []
+        }],
         servers: [
+            // {
+            //     url: "https://vebos-backend-418609.el.r.appspot.com/",
+            //     description: "Live server"
+            // },
             {
                 url: "http://localhost:8080/",
                 description: "Local server"
-            },
-            {
-                url: "<your live url here>",
-                description: "Live server"
             },
         ]
     },
@@ -29,7 +41,7 @@ const options = {
     apis: ['./routes/*.js', './routes/brand/*.js', './routes/creator/*.js'],
 }
 
-const options1 = { customCssUrl: '/public/swagger-ui.css', customSiteTitle: "Swagger UI" };
+const options1 = { customSiteTitle: "Swagger UI" };
 
 
 const swaggerSpec = swaggerJsdoc(options)

@@ -1,11 +1,12 @@
 import express from 'express';
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
-import { APP_SECRET } from '../../utils/auth.js';
 import Brands from '../../models/brand.js';
+import dotenv from 'dotenv';
 
+
+dotenv.config()
 const router = express.Router();
-
 
 /** POST Methods */
 /**
@@ -132,7 +133,7 @@ router.post('/login', async (request, response) => {
     response.status(500).send({ message: "Invalid password" })
     return
   }
-  const token = jwt.sign({ userId: brand._id }, APP_SECRET)
+  const token = jwt.sign({ brandId: brand._id }, process.env.JWT_SECRET)
   response.status(201).send({ token });
 });
 

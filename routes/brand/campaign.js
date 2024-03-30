@@ -1,6 +1,7 @@
 import express from 'express';
 import Campaigns from '../../models/campaign.js';
 import { handleIndexFrom } from '../../utils/index.js';
+import { verifyTokenBrand } from "../../utils/auth.js"
 
 const router = express.Router();
 
@@ -49,9 +50,12 @@ const router = express.Router();
  *        description: Server Error
  */
 
-router.post('/create', async (request, response) => {
+router.post('/create', verifyTokenBrand, async (request, response) => {
     try {
-        const newCampaign = new Campaigns(request.body)
+        const newCampaign = new Campaigns({
+            ...request.body,
+            brandId: request.brandId
+        })
         const campaign = await newCampaign.save()
         return response.status(201).send(campaign);
     } catch (error) {
@@ -80,10 +84,12 @@ router.post('/create', async (request, response) => {
  *      500:
  *        description: Server Error
  */
-router.get('/', async (request, response) => {
+router.get('/', verifyTokenBrand, async (request, response) => {
     const { page, limit, search } = request.query
     const indexFrom = handleIndexFrom(page, limit)
-    const filter = {}
+    const filter = {
+        brandId: request.brandId
+    }
     try {
         const campaigns = await Campaigns.find(filter)
             .limit(limit ?? 10)
@@ -94,7 +100,6 @@ router.get('/', async (request, response) => {
             total,
             items: campaigns,
         });
-        return response.status(200).json("brand campaigns api execute success")
     } catch (error) {
         console.log(error.message);
         response.status(500).send({ message: error.message });
@@ -120,10 +125,10 @@ router.get('/', async (request, response) => {
  *      500:
  *        description: Server Error
  */
-router.delete('/delete', async (request, response) => {
+router.delete('/delete', verifyTokenBrand, async (request, response) => {
     try {
         const { id } = request.query;
-        const result = await Campaigns.deleteOne({ _id: id })
+        const result = await Campaigns.deleteOne({ _id: id, brandId: request.brandId })
 
         if (!result) {
             return response.status(404).json({ message: 'Campaign not found' });
@@ -179,10 +184,10 @@ router.delete('/delete', async (request, response) => {
  *      500:
  *        description: Server Error
  */
-router.put('/update', async (request, response) => {
+router.put('/update', verifyTokenBrand, async (request, response) => {
     try {
         const { id } = request.body;
-        const result = await Campaigns.findOneAndUpdate({ _id: id }, request.body, {
+        const result = await Campaigns.findOneAndUpdate({ _id: id, brandId: request.brandId }, request.body, {
             new: true
         })
         if (!result) {
@@ -214,12 +219,16 @@ router.put('/update', async (request, response) => {
  *      500:
  *        description: Server Error
  */
-router.get('/single', async (request, response) => {
+router.get('/single', verifyTokenBrand, async (request, response) => {
     try {
         const { id } = request.query;
         const campaign = await Campaigns.findOne({
-            _id: id
+            _id: id,
+            brandId: request.brandId
         })
+        if (!campaign) {
+            return response.status(404).json({ message: 'Campaign not found' });
+        }
         return response.status(200).json(campaign);
     } catch (error) {
         response.status(500).send({ message: error.message });

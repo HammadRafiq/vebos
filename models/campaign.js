@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const CampaignSchema = new mongoose.Schema({
+    brandId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Brands"
+    },
     brandName: {
         type: String,
         required: [true]

@@ -1,7 +1,7 @@
 import express from 'express';
-import Campaigns from '../../models/campaign.js';
 import { cloudinaryUpload, fileUpload, handleIndexFrom } from '../../utils/index.js';
 import Clips from '../../models/clip.js';
+import { verifyTokenCreator } from '../../utils/auth.js';
 
 const router = express.Router();
 const upload = fileUpload()
@@ -11,7 +11,7 @@ const upload = fileUpload()
  * '/creator/clips/submit':
  *  post:
  *     tags:
- *     - Creator Clips
+ *     - Creator Clips Submission
  *     summary: Submit a clip
  *     requestBody:
  *      required: true
@@ -38,16 +38,15 @@ const upload = fileUpload()
  *      500:
  *        description: Server Error
  */
-router.post('/submit', upload.single("video"), async (req, res) => {
-    if (!req.file) {
-        return res.status(400).send('No file uploaded');
-    }
+router.post('/submit', verifyTokenCreator, upload.single("video"), async (req, res) => {
     const filePath = req.file.path;
     try {
         const cloudinaryResponse = await cloudinaryUpload(filePath)
         const newClip = new Clips({
             ...req.body,
-            url: cloudinaryResponse.url
+            url: cloudinaryResponse.url,
+            date: new Date(),
+            brandId: req.brandId
         })
         const clip = await newClip.save()
         return res.status(201).send(clip);
@@ -60,10 +59,10 @@ router.post('/submit', upload.single("video"), async (req, res) => {
 
 /**
  * @openapi
- * '/brand/clips':
+ * '/creator/clips':
  *  get:
  *     tags:
- *     - Creator Clips
+ *     - Creator Clips Submission
  *     summary: Get all clips
  *     parameters:
  *      - name: page
@@ -78,10 +77,12 @@ router.post('/submit', upload.single("video"), async (req, res) => {
  *      500:
  *        description: Server Error
  */
-router.get('/', async (request, response) => {
+router.get('/', verifyTokenCreator, async (request, response) => {
     const { page, limit, search } = request.query
     const indexFrom = handleIndexFrom(page, limit)
-    const filter = {}
+    const filter = {
+        brandId: request.brandId
+    }
     try {
         const clips = await Clips.find(filter)
             .limit(limit ?? 10)
@@ -98,129 +99,5 @@ router.get('/', async (request, response) => {
     }
 });
 
-
-/**
- * @openapi
- * '/brand/campaigns/delete':
- *  delete:
- *     tags:
- *     - Brand Campaign
- *     summary: Delete campaign by Id
- *     parameters:
- *      - name: id
- *        in: query
- *        description: The unique Id of the campaign
- *        required: true
- *     responses:
- *      200:
- *        description: Removed
- *      500:
- *        description: Server Error
- */
-router.delete('/delete', async (request, response) => {
-    try {
-        const { id } = request.query;
-        const result = await Campaigns.deleteOne({ _id: id })
-
-        if (!result) {
-            return response.status(404).json({ message: 'Campaign not found' });
-        }
-        return response.status(200).send({ message: 'Campaign deleted successfully' });
-    } catch (error) {
-        console.log(error.message);
-        response.status(500).send({ message: error.message });
-    }
-});
-
-
-/**
- * @openapi
- * '/brand/campaigns/update':
- *  put:
- *     tags:
- *     - Brand Campaign
- *     summary: Update a campaign
- *     requestBody:
- *      required: true
- *      content:
- *        application/json:
- *           schema:
- *            type: object
- *            required:
- *              - id
- *            properties:
- *              id:
- *                type: string
- *                default: campaign id
- *              brandName:
- *                type: string
- *                default: Vebos
- *              brandIndustry:
- *                type: string
- *                default: Tech
- *              targetAudience:
- *                type: string
- *                default: TikTok users
- *              results:
- *                type: string
- *                default: Lorem ipsum
- *              contentType:
- *                type: string
- *                default: Comedy
- *              budget:
- *                type: number
- *                default: 1000
- *     responses:
- *      200:
- *        description: Modified
- *      500:
- *        description: Server Error
- */
-router.put('/update', async (request, response) => {
-    try {
-        const { id } = request.body;
-        const result = await Campaigns.findOneAndUpdate({ _id: id }, request.body, {
-            new: true
-        })
-        if (!result) {
-            return response.status(404).json({ message: 'Campaign not found' });
-        }
-        return response.status(200).send({ message: 'Campaign updated successfully' });
-    } catch (error) {
-        console.log(error.message);
-        response.status(500).send({ message: error.message });
-    }
-});
-
-
-/**
- * @openapi
- * '/brand/campaigns/single':
- *  get:
- *     tags:
- *     - Brand Campaign
- *     summary: Get a single campaign by id
- *     parameters:
- *      - name: id
- *        in: query
- *        description: Campaign id
- *        required: true
- *     responses:
- *      200:
- *        description: Fetched Successfully
- *      500:
- *        description: Server Error
- */
-router.get('/single', async (request, response) => {
-    try {
-        const { id } = request.query;
-        const campaign = await Campaigns.findOne({
-            _id: id
-        })
-        return response.status(200).json(campaign);
-    } catch (error) {
-        response.status(500).send({ message: error.message });
-    }
-});
 
 export default router

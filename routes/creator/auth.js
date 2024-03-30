@@ -2,8 +2,10 @@ import express from 'express';
 import Creators from '../../models/creator.js';
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
-import { APP_SECRET } from '../../utils/auth.js';
+import dotenv from 'dotenv';
 
+
+dotenv.config()
 const router = express.Router();
 
 /**
@@ -129,7 +131,7 @@ router.post('/login', async (request, response) => {
     response.status(500).send({ message: "Invalid password" })
     return
   }
-  const token = jwt.sign({ userId: creator._id }, APP_SECRET)
+  const token = jwt.sign({ creatorId: creator._id }, process.env.JWT_SECRET)
   response.status(200).send({ token });
 });
 
