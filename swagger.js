@@ -28,7 +28,7 @@ const options = {
         }],
         servers: [
             {
-                url: "https://vebos-backend-418609.el.r.appspot.com/",
+                url: "http://13.60.216.165:8080/",
                 description: "Live server"
             },
             // {
