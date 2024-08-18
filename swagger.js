@@ -27,14 +27,14 @@ const options = {
             bearerAuth: []
         }],
         servers: [
-            // {
-            //     url: "https://vebos-backend-418609.el.r.appspot.com/",
-            //     description: "Live server"
-            // },
             {
-                url: "http://localhost:8080/",
-                description: "Local server"
+                url: "https://vebos-backend-418609.el.r.appspot.com/",
+                description: "Live server"
             },
+            // {
+            //     url: "http://localhost:8080/",
+            //     description: "Local server"
+            // },
         ]
     },
     // looks for configuration in specified directories

@@ -32,9 +32,11 @@ export function fileUpload(file) {
 }
 
 export async function cloudinaryUpload(filePath) {
-    // Upload file to Cloudinary
-    const cloudinaryResponse = await cloudinary.uploader.upload(filePath, { resource_type: 'video' });
-    // Delete the locally saved file after uploading to Cloudinary
-    fs.unlinkSync(filePath);
-    return cloudinaryResponse
+    if (filePath) {
+        // Upload file to Cloudinary
+        const cloudinaryResponse = await cloudinary.uploader.upload(filePath, { resource_type: 'video' });
+        // Delete the locally saved file after uploading to Cloudinary
+        fs.unlinkSync(filePath);
+        return cloudinaryResponse
+    }
 }

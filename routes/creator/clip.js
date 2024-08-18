@@ -39,12 +39,12 @@ const upload = fileUpload()
  *        description: Server Error
  */
 router.post('/submit', verifyTokenCreator, upload.single("video"), async (req, res) => {
-    const filePath = req.file.path;
+    const filePath = req?.file?.path;
     try {
         const cloudinaryResponse = await cloudinaryUpload(filePath)
         const newClip = new Clips({
             ...req.body,
-            url: cloudinaryResponse.url,
+            url: cloudinaryResponse?.url,
             date: new Date(),
             brandId: req.brandId
         })

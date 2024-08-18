@@ -15,7 +15,6 @@ const CreatorSchema = new mongoose.Schema({
     },
     paypal: {
         type: String,
-        required: [true]
     },
     country: {
         type: String,
@@ -41,6 +40,10 @@ const CreatorSchema = new mongoose.Schema({
     clipLink: {
         type: String,
         required: [true]
+    },
+    validationVideo: {
+        type: String,
+        required: [true]        
     }
 })
 

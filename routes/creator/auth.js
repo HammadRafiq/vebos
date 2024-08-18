@@ -3,10 +3,12 @@ import Creators from '../../models/creator.js';
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import dotenv from 'dotenv';
+import { cloudinaryUpload, fileUpload } from '../../utils/index.js';
 
 
 dotenv.config()
 const router = express.Router();
+const upload = fileUpload()
 
 /**
  * @openapi
@@ -18,18 +20,18 @@ const router = express.Router();
  *     requestBody:
  *      required: true
  *      content:
- *        application/json:
+ *        multipart/form-data:
  *           schema:
  *            type: object
  *            required:
  *              - name
- *              - password
  *              - email
- *              - paypal
+ *              - password
  *              - country
  *              - parentName
  *              - tiktokId
  *              - clipLink
+ *              - validationVideo
  *            properties:
  *              name:
  *                type: string
@@ -64,22 +66,28 @@ const router = express.Router();
  *              clipLink:
  *                type: string
  *                default: https://www.google.com
+ *              validationVideo:
+ *                type: string
+ *                format: binary
  *     responses:
  *      201:
  *        description: Created
  *      500:
  *        description: Server Error
  */
-router.post('/signup', async (request, response) => {
+router.post('/signup', upload.single("validationVideo"), async (request, response) => {
+  const filePath = request?.file?.path;
   try {
     const creatorExists = await Creators.findOne({ email: request.body.email })
     if (creatorExists) {
       return response.status(400).send("User with this email already exists");
     }
+    const cloudinaryResponse = await cloudinaryUpload(filePath)
     const securePassword = await bcrypt.hash(request.body.password, 10)
     const newCreator = new Creators({
       ...request.body,
-      password: securePassword
+      password: securePassword,
+      validationVideo: cloudinaryResponse?.url
     })
     const creator = await newCreator.save()
     return response.status(201).send(creator);
@@ -132,7 +140,7 @@ router.post('/login', async (request, response) => {
     return
   }
   const token = jwt.sign({ creatorId: creator._id }, process.env.JWT_SECRET)
-  response.status(200).send({ token });
+  response.status(200).send({ token, userType: "creator" });
 });
 
 

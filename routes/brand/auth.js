@@ -134,7 +134,7 @@ router.post('/login', async (request, response) => {
     return
   }
   const token = jwt.sign({ brandId: brand._id }, process.env.JWT_SECRET)
-  response.status(201).send({ token });
+  response.status(201).send({ token, userType: "brand" });
 });
 
 
