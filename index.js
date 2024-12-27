@@ -51,7 +51,7 @@ app.use('/brand/auth', authBrands)
 app.use('/brand/campaigns', campaigns)
 app.use('/brand/creatorsRequest', creatorsRequest)
 app.use('/brand/buyClip', buyClip)
-app.use('/brand', index) // Rest of the routes
+app.use('/brand', index) // Rest routes
 
 mongoose
   .connect(mongoDBURL, {
