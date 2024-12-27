@@ -77,7 +77,7 @@ router.post('/submit', verifyTokenCreator, upload.single("video"), async (req, r
  *      500:
  *        description: Server Error
  */
-router.get('/', verifyTokenCreator, async (request, response) => {
+router.get('/', async (request, response) => {
     const { page, limit, search } = request.query
     const indexFrom = handleIndexFrom(page, limit)
     const filter = {

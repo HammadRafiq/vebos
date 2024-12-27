@@ -127,6 +127,7 @@ router.post('/signup', upload.single("validationVideo"), async (request, respons
  *        description: Server Error
  */
 router.post('/login', async (request, response) => {
+  console.log("login request::: ", request.body)
   const creator = await Creators.findOne({
     email: request.body.email
   })
