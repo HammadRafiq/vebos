@@ -1,16 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import authCreators from './routes/creator/auth.js';
-import clips from './routes/creator/clip.js';
-import profiles from './routes/creator/profile.js';
-import pages from './routes/creator/page.js';
-import authBrands from './routes/brand/auth.js';
-import campaigns from './routes/brand/campaign.js';
-import buyClip from './routes/brand/buyaclip.js';
-import creatorsRequest from './routes/brand/creatorRequest.js';
-import index from './routes/brand/index.js';
 import cors from 'cors';
-import swaggerDocs from './swagger.js';
 import dotenv from 'dotenv';
 
 
@@ -39,19 +29,19 @@ app.get('/', (request, response) => {
   return response.status(234).send('Vebos Backend Root');
 });
 
-// Creator routes
-app.use('/creator/auth', authCreators)
-app.use('/creator/clips', clips)
-app.use('/creator/profiles', profiles)
-app.use('/creator/pages', pages)
+// // Creator routes
+// app.use('/creator/auth', authCreators)
+// app.use('/creator/clips', clips)
+// app.use('/creator/profiles', profiles)
+// app.use('/creator/pages', pages)
 
 
-// Brand routes
-app.use('/brand/auth', authBrands)
-app.use('/brand/campaigns', campaigns)
-app.use('/brand/creatorsRequest', creatorsRequest)
-app.use('/brand/buyClip', buyClip)
-app.use('/brand', index) // Rest routes
+// // Brand routes
+// app.use('/brand/auth', authBrands)
+// app.use('/brand/campaigns', campaigns)
+// app.use('/brand/creatorsRequest', creatorsRequest)
+// app.use('/brand/buyClip', buyClip)
+// app.use('/brand', index) // Rest routes
 
 mongoose
   .connect(mongoDBURL, {
